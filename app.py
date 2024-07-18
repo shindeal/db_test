@@ -1,33 +1,34 @@
 import streamlit as st
 import pyodbc
+import pandas as pd
 
-# Initialize connection.
-# Uses st.cache_resource to only run once.
-@st.cache_resource
-def init_connection():
-    return pyodbc.connect(
-        "DRIVER={ODBC Driver 17 for SQL Server};SERVER=L1SQLS1601P\SpeedyDWAnalytic"
-        + st.secrets["server"]
-        + ";DATABASE=Speedy_Models"
-        + st.secrets["database"]
-        + ";UID="
-        + st.secrets["username"]
-        + ";PWD="
-        + st.secrets["password"]
-    )
+# Database connection details
+connection_string = r"Driver={SQL Server};Server=L1SQLS1601P\SpeedyDWAnalytic;Database=Speedy_Models;Trusted_Connection=yes;"
 
-conn = init_connection()
+# Function to establish a database connection
+def get_connection():
+    conn = pyodbc.connect(connection_string)
+    return conn
 
-# Perform query.
-# Uses st.cache_data to only rerun when the query changes or after 10 min.
-@st.cache_data(ttl=600)
-def run_query(query):
-    with conn.cursor() as cur:
-        cur.execute(query)
-        return cur.fetchall()
+# Function to query data from the database
+def get_data(query):
+    conn = get_connection()
+    data = pd.read_sql(query, conn)
+    conn.close()
+    return data
 
-rows = run_query("SELECT top 1 * from dim_product with (nolock);")
+# Streamlit app
+def main():
+    st.title("SQL Server Data Viewer")
 
-# Print results.
-for row in rows:
-    st.write(f"{row[0]} has a :{row[1]}:")
+    # SQL query to execute
+    query = "SELECT TOP 10 * FROM YourTableName"  # Adjust the query as needed
+
+    # Retrieve data from the database
+    data = get_data(query)
+
+    # Display the data in Streamlit
+    st.write(data)
+
+if __name__ == "__main__":
+    main()
