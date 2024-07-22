@@ -1,22 +1,18 @@
 import streamlit as st
-import pyodbc
 import pandas as pd
+from sqlalchemy import create_engine
 
 # Database connection details
-#connection_string = r"Driver={SQL Server};Server=L1SQLS1601P\SpeedyDWAnalytic;Database=Speedy_Models;Trusted_Connection=yes;"
-connection_string = "Driver={ODBC Driver 17 for SQL Server};Server=L1SQLS1601P\SpeedyDWAnalytic;Database=Speedy_Models;Trusted_Connection=yes;"
+server = "L1SQLS1601P\\SpeedyDWAnalytic"
+database = "Speedy_Models"
+connection_string = f"mssql+pyodbc://@{server}/{database}?driver=ODBC+Driver+17+for+SQL+Server;Trusted_Connection=yes"
 
-
-# Function to establish a database connection
-def get_connection():
-    conn = pyodbc.connect(connection_string)
-    return conn
-
-# Function to query data from the database
+# Function to establish a database connection and retrieve data
+@st.cache_data
 def get_data(query):
-    conn = get_connection()
-    data = pd.read_sql(query, conn)
-    conn.close()
+    engine = create_engine(connection_string)
+    with engine.connect() as conn:
+        data = pd.read_sql(query, conn)
     return data
 
 # Streamlit app
