@@ -1,12 +1,16 @@
 import streamlit as st
 import pandas as pd
 from sqlalchemy import create_engine
+import urllib
 
 # Database connection details
 server = "L1SQLS1601P\\SpeedyDWAnalytic"
 database = "Speedy_Models"
 driver = "ODBC Driver 17 for SQL Server"
-connection_string = f"mssql+pyodbc://@{server}/{database}?driver={driver}"
+
+# Create a connection string
+params = urllib.parse.quote_plus(f"DRIVER={{{driver}}};SERVER={server};DATABASE={database};Trusted_Connection=yes;")
+connection_string = f"mssql+pyodbc:///?odbc_connect={params}"
 
 # Function to establish a database connection and retrieve data
 @st.cache_data
