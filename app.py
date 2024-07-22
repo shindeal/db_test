@@ -3,7 +3,9 @@ import pyodbc
 import pandas as pd
 
 # Database connection details
-connection_string = r"Driver={SQL Server};Server=L1SQLS1601P\SpeedyDWAnalytic;Database=Speedy_Models;Trusted_Connection=yes;"
+#connection_string = r"Driver={SQL Server};Server=L1SQLS1601P\SpeedyDWAnalytic;Database=Speedy_Models;Trusted_Connection=yes;"
+connection_string = "Driver={ODBC Driver 17 for SQL Server};Server=L1SQLS1601P\SpeedyDWAnalytic;Database=Speedy_Models;Trusted_Connection=yes;"
+
 
 # Function to establish a database connection
 def get_connection():
