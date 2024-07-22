@@ -5,7 +5,8 @@ from sqlalchemy import create_engine
 # Database connection details
 server = "L1SQLS1601P\\SpeedyDWAnalytic"
 database = "Speedy_Models"
-connection_string = f"mssql+pyodbc://@{server}/{database}?driver=ODBC+Driver+17+for+SQL+Server;Trusted_Connection=yes"
+driver = "ODBC+Driver+17+for+SQL+Server"
+connection_string = f"mssql+pyodbc://@{server}/{database}?driver={driver};Trusted_Connection=yes"
 
 # Function to establish a database connection and retrieve data
 @st.cache_data
@@ -20,7 +21,7 @@ def main():
     st.title("SQL Server Data Viewer")
 
     # SQL query to execute
-    query = "SELECT TOP 10 * FROM dim_depot with (nolock)"  # Adjust the query as needed for testing
+    query = "SELECT TOP 10 * FROM dim_depot with (nolock)"  # Adjust the query as needed
 
     # Retrieve data from the database
     data = get_data(query)
