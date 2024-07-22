@@ -20,7 +20,7 @@ def main():
     st.title("SQL Server Data Viewer")
 
     # SQL query to execute
-    query = "SELECT TOP 10 * FROM dim_depot with (nolock)"  # Adjust the query as needed
+    query = "SELECT TOP 10 * FROM dim_depot with (nolock)"  # Adjust the query as needed for testing
 
     # Retrieve data from the database
     data = get_data(query)
