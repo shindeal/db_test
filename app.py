@@ -7,13 +7,13 @@ import pyodbc
 def init_connection():
     return pyodbc.connect(
         "DRIVER={ODBC Driver 17 for SQL Server};SERVER="
-        + st.secrets["db"]["server"]
+        + st.secrets["server"]
         + ";DATABASE="
-        + st.secrets["db"]["database"]
+        + st.secrets["database"]
         + ";UID="
-        + st.secrets["db"]["username"]
+        + st.secrets["username"]
         + ";PWD="
-        + st.secrets["db"]["password"]
+        + st.secrets["password"]
     )
 
 conn = init_connection()
@@ -26,13 +26,8 @@ def run_query(query):
         cur.execute(query)
         return cur.fetchall()
 
-# Sample SQL query, replace with your actual query.
-query = """
-SELECT TOP 10 * FROM dim_depot with (nolock)
-"""
-
-rows = run_query(query)
+rows = run_query("SELECT top 10 * from dim_depot with (nolock);")
 
 # Print results.
 for row in rows:
-    st.write(row)
+    st.write(f"{row[0]} has a :{row[1]}:")
