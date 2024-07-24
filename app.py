@@ -26,7 +26,7 @@ def run_query(query):
         cur.execute(query)
         return cur.fetchall()
 
-rows = run_query("SELECT top 10 * from dim_depot with (nolock);")
+rows = run_query("SELECT TOP 10 * from dim_depot WITH (NOLOCK);")
 
 # Print results.
 for row in rows:
