@@ -14,6 +14,7 @@ def get_connection():
         + st.secrets["username"]
         + ";PWD="
         + st.secrets["password"]
+        + ";Connection Timeout=30;"  # Increase timeout to 30 seconds
     )
 
 
