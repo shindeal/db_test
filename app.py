@@ -1,10 +1,10 @@
 import streamlit as st
 import pyodbc
+import pandas as pd
 
-# Initialize connection.
-# Uses st.cache_resource to only run once.
-@st.cache_resource
-def init_connection():
+
+# Function to establish a database connection
+def get_connection():
     return pyodbc.connect(
         "DRIVER={ODBC Driver 17 for SQL Server};SERVER="
         + st.secrets["server"]
@@ -16,18 +16,30 @@ def init_connection():
         + st.secrets["password"]
     )
 
-conn = init_connection()
 
-# Perform query.
-# Uses st.cache_data to only rerun when the query changes or after 10 min.
+# Function to query data from the database
 @st.cache_data(ttl=600)
-def run_query(query):
-    with conn.cursor() as cur:
-        cur.execute(query)
-        return cur.fetchall()
+def get_data(query):
+    conn = get_connection()
+    data = pd.read_sql(query, conn)
+    conn.close()
+    return data
 
-rows = run_query("SELECT TOP 10 * from dim_depot WITH (NOLOCK);")
+# Streamlit app
+def main():
+    st.title("SQL Server Data Viewer")
 
-# Print results.
-for row in rows:
-    st.write(f"{row[0]} has a :{row[1]}:")
+    # SQL query to execute
+    query = "SELECT TOP 10 * FROM dim_depot WITH (NOLOCK)"  # Adjust the query as needed
+
+    # Retrieve data from the database
+    data = get_data(query)
+
+    # Display the data in Streamlit
+    #st.write("### Query Results")
+    st.table(data)
+
+
+
+if __name__ == "__main__":
+    main()
